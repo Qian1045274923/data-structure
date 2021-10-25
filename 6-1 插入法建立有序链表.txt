@@ -1,0 +1,154 @@
+6-1 插入法建立有序链表 (45 分)
+本题要求编写四个函数，这些函数都是对单链表进行操作：读取元素值，将元素插入单链表固定位置（第一个数据结点编号为1），删除单链表中某个结点，以及创建一个有序单链表。针对相关操作：插入、删除、建有序表等均有相关的测试函数进行测试。无须编写main函数，只需完成相关函数的定义实现即可。
+
+函数接口定义：
+//1. 读取单链表L里的第i个元素的值，将值赋给变量e
+Status GetElem(LinkList L, int i, ElemType& e);
+//2. 往单链表L中的第i个位置(之后)，插入元素e
+Status ListInsert(LinkList& L, int i, ElemType e)；
+//3. 在带头结点的单链表L中，删除第i个元素
+Status ListDelete(LinkList& L, int i)；
+//后插法创建有序单链表，元素从小到大
+void CreateList(LinkList& L, ElemType data[], int n);
+裁判测试程序样例：
+在这里给出函数被调用进行测试的例子：
+
+#include <bits/stdc++.h>
+using namespace std;
+#define OK 1                //编译之前，编译器会将OK替换成1
+#define ERROR -1            //编译之前，编译器会将ERROR替换成-1
+typedef int Status;         //Status是int的别名
+
+typedef struct Point {
+    int x, y;
+    // 重载赋值运算符=，赋值运算符重载只能在结构内实现
+    // 这使得可以将一个结构体数据直接赋给一个结构体变量
+    Point& operator=(Point& value)
+    {
+        x = value.x;
+        y = value.y;
+        return *this;
+    }
+}Point;
+
+//重载运算符<=，横坐标小的就小，横坐标一样则比较纵坐标
+bool operator<=(const Point& a, const Point& b)
+{
+    if (a.x == b.x)return a.y <= b.y;
+    return a.x <= b.x;
+}
+
+typedef Point ElemType;
+
+typedef struct  LNode {
+    ElemType      data;     // 数据域，每个数据是一个Point
+    struct LNode* next;  // 指针域
+} LNode, * LinkList;
+
+
+//读取单链表L里的第i个元素的值，将值赋给变量e
+Status GetElem(LinkList L, int i, ElemType& e);
+//往单链表L中的第i个位置(之后)，插入元素e
+Status ListInsert(LinkList& L, int i, ElemType e);
+//在带头结点的单链表L中，删除第i个元素
+Status ListDelete(LinkList& L, int i);
+//后插法创建有序单链表，元素从小到大
+void CreateList(LinkList& L, ElemType data[], int n);
+
+int main( )
+{
+    int type,n;
+    cin>>type;
+    cin>>n;
+    ElemType *ea = new ElemType[n];
+    LinkList L = new LNode;
+    L->next = NULL;
+    for(int i=0;i<n;i++){
+        cin>>ea[i].x ;
+        cin>>ea[i].y ;
+    }
+    switch(type){
+        case 1: TestCreateList(L,ea,n);
+                break;
+        case 2: TestListInsert(L,ea,n);
+                break;
+        case 3: TestGetElem(L,ea,n);
+                break;
+        default: TestListDelete(L,ea,n);
+
+    }
+    cout << endl;
+}
+/* 请在这里填写答案 */
+输入样例：
+在这里给出一组输入。例如，创建有序单链表：
+
+1
+11
+10 3 10 5 10 6 20 2 10 7 20 3 10 4 20 4 20 5 20 6 20 7
+输出样例：
+在这里给出相应的输出。例如：
+
+10 3 10 4 10 5 10 6 10 7 20 2 20 3 20 4 20 5 20 6 20 7 
+
+C++ (g++)
+
+//读取单链表L里的第i个元素的值，将值赋给变量e
+Status GetElem(LinkList L, int i, ElemType& e)
+{
+    for (int j = 0; j < i; j++)
+    {
+        if (L && L->next)L = L->next;
+        else return ERROR;
+    }
+    e = L->data;
+    return OK;
+}
+
+//往单链表L中的第i个位置(之后)，插入元素e
+Status ListInsert(LinkList& L, int i, ElemType e)
+{
+    while (i-- && L)L = L->next;
+    if (!L)return ERROR;
+    LinkList t = new LNode;
+    t->data = e;
+    t->next = L->next;
+    L->next = t;
+    return OK;
+}
+//在带头结点的单链表L中，删除第i个元素
+Status ListDelete(LinkList& L, int i)
+{
+    if (!L)return ERROR;
+    if (!i)return OK;
+    if (i == 1) { L = L->next; return OK; }
+    while (i--&&L)L = L->next;
+    if (!L || !L->next || !L->next->next)return ERROR;
+    else {
+        delete (L->next); L->next = L->next->next;
+    }
+    return OK;
+}
+
+//后插法创建有序单链表，元素从小到大
+void CreateList(LinkList& L, ElemType data[], int n)
+{
+    LinkList curr,  pre ;
+    for (int i = 0; i < n; i++)
+    {
+        curr = L->next;
+        //创建新结点 
+        LinkList p = new LNode;
+        p->data = data[i];
+        //pre永远在curr的前面，curr是每次遍历的开始 
+        pre = L;
+        //当前的结点，数字不大于插入目标时，将目标插在这个结点的前面 
+        while (curr != NULL && curr->data <= data[i])
+        {
+            pre = curr;
+            curr = curr->next;
+        }
+        p->next = curr;
+        pre->next = p;
+    }
+}
