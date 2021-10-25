@@ -1,0 +1,108 @@
+7-2 贪吃蛇 (50 分)
+这是一个类似于贪吃蛇的程序，一条蛇，在一个矩阵（方阵）中前进，从左上角（0，0）开始，依次吃掉矩阵中的数据，当它碰壁或者发现前进方向上的元素已经被吃过，就转向下一个方向并继续前进，转向的规则依次是：左，上，右，下。n阶方阵的元素顺序按行存储的，例如，n=2，则方阵的元素如下：
+0 1
+2 3
+如n=4，则方阵是：
+0 1 2 3
+4 5 6 7
+8 9 10 11
+12 13 14 15
+
+输入格式:
+输入方阵的阶数n。
+
+输出格式:
+在一行上按蛇吃过的元素的顺序输出，其中用空格分隔，行尾有一个空格
+
+输入样例:
+在这里给出一组输入。例如：
+
+4
+输出样例:
+在这里给出相应的输出。例如：
+
+0 1 2 3 7 11 15 14 13 12 8 4 5 6 10 9 
+
+C++（g++）
+
+#include<iostream>
+#include<list>
+
+using namespace std;
+int map[20][20] = { 0 };
+int state = 2;
+int pos[2] = { 1,1 };
+
+int main()
+{
+	list<int>path;
+	int n;
+	cin >> n;
+	/*
+	int **map = new int*[n];
+	for (int i = 0; i < n; i++)
+	{
+		map[i] = new int[n];
+	}
+	*/
+	int t = 0;
+	for (int i = 1; i <= n; i++)
+	{
+		for (int j = 1; j <= n; j++)
+		{
+			map[i][j] = t++;
+		}
+	}
+	path.push_back(0);
+	while (true)
+	{
+		if (state == 0 && map[pos[0]][pos[1] - 1] != 0 && pos[0] >= 1)//state = 0 向左移动，地图左侧一个位置不能为0（未走过），当前x坐标必须大于等于0；
+		{
+			pos[1]--;
+			path.push_back(map[pos[0]][pos[1]]);
+			map[pos[0]][pos[1]] = 0;
+		}
+		else if (state == 1 && map[pos[0] - 1][pos[1]] != 0 && pos[1] >= 1)//state = 1 向上移动，地图上侧一个位置不能为0（未走过），当前y坐标必须大于等于0；
+		{
+			pos[0]--;
+			path.push_back(map[pos[0]][pos[1]]);
+			map[pos[0]][pos[1]] = 0;
+		}
+		else if (state == 2 && map[pos[0]][pos[1] + 1] != 0 && pos[0] <= n)//state = 2 向右移动，地图右侧一个位置不能为0（未走过），当前x坐标必须小于等于n-1；
+		{
+			pos[1]++;
+			path.push_back(map[pos[0]][pos[1]]);
+			map[pos[0]][pos[1]] = 0;
+		}
+		else if (state == 3 && map[pos[0] + 1][pos[1]] != 0 && pos[1] <= n)//state = 3 向下移动，地图下侧一个位置不能为0（未走过），当前y坐标必须小于等于n-1；
+		{
+			pos[0]++;
+			path.push_back(map[pos[0]][pos[1]]);
+			map[pos[0]][pos[1]] = 0;
+		}
+		else if (map[pos[0]][pos[1] - 1] != 0 && pos[0] >= 1)//state = 0 向左移动
+		{
+			state = 0;
+		}
+		else if (map[pos[0] - 1][pos[1]] != 0 && pos[1] >= 1)//state = 1 向上移动
+		{
+			state = 1;
+		}
+		else if (map[pos[0]][pos[1] + 1] != 0 && pos[0] <= n)//state = 2 向右移动
+		{
+			state = 2;
+		}
+		else if (map[pos[0] + 1][pos[1]] != 0 && pos[1] <= n)//state = 3 向下移动
+		{
+			state = 3;
+		}
+		else
+		{
+			break;
+		}
+	}
+	for (list<int>::iterator it = path.begin(); it != path.end(); it++)
+	{
+		cout << *it <<" ";
+	}
+}
