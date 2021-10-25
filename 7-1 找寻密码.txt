@@ -1,0 +1,61 @@
+7-1 找寻密码 (50 分)
+这是一个密码问题，密码由10个小写字母构成，这10个密码均从所有的小写字母中按规律查找，其规律是：所有的字母按字典序从'a'~'z'排列从头开始进行1到n报数，凡是报到n的字母出列，剩下的向小序号方向靠拢，再从头开始进行1到（n+1）报数，凡报到（n+1）的出列，剩下的向小序号方向靠拢，以后一次从头开始轮流进行1到n、1到（n+1）报数，直到得到出列的字母有10个为止，这些字母就是所需要的密码。
+
+输入格式:
+输入奇数次报数的出列序号n。
+
+输出格式:
+输出10个字母密码
+
+输入样例:
+在这里给出一组输入。例如：
+
+5
+输出样例:
+在这里给出相应的输出。例如：
+
+ejotygnvfm
+
+C++（g++）
+
+using namespace std;
+#include<cstring>
+#include <iostream>
+#include<stdio.h>
+#include<stdlib.h>
+#include<vector>;
+
+void solution(vector<char>&a,int b)
+{
+    int i = 0, j = 0, k = 0, m = 0;//i记录当前便利到的数组下标，j当前遍历的计数，k当前输出个数
+    while (k<10)
+    {
+        if (i == a.size())
+        {
+            i = 0; j = 0; m++;
+            if (m % 2 == 1)b++;
+            else b--;
+        }//数组下标越界
+        if (a[i] == ' ');
+        else
+        {
+            j++;
+            if (j == b)
+            {
+                cout << a[i];
+                j = 0; k++; a[i] = ' ';
+            }
+        }
+        i++;
+    }
+}
+
+int main()
+{
+    int n;
+    cin >> n;
+    vector<char>t(26);
+    for (int i = 0; i < t.size(); i++)t[i] = i+97;
+    solution(t, n);
+    return 0;
+}
