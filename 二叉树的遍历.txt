@@ -1,0 +1,95 @@
+一棵结点总数为N的二又树用[val,left,right]表示,结点编号从1-N,其中val=1代表整棵树的根结点,l代表va的左子树根结点编号,r代表val的右子树根结点编号,若编号为0,代表NULL。例如:
+
+3
+123
+200
+300
+
+上述数据表示该二又树由3个结点构成,1为根结点,结点1的左子树结点为2,右子树结点为3,要求分别对该二叉树进行前序、中序、后序遍历,并分别输出结果。
+
+二叉树结点类型定义
+typedef struct node {
+   int val
+   int left
+   int right
+}Node;
+
+Code：
+
+using namespace std;
+#include <algorithm>
+#include<cstring>
+#include <iostream>
+#include<string>
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#include<string.h>
+#include<iomanip>
+#include<sstream>
+#include<vector>;
+#include<stack>
+
+
+void show(const vector<vector<int> >& v)
+{
+	cout << "----show----" << endl;
+	for (vector<int>a : v)
+	{
+		for (int b : a)cout << b << " ";
+		cout << endl;
+	}
+	cout << endl;
+}
+
+void p_travel(const vector<vector<int> >& v)
+{
+	stack<int>st;
+	st.push(v[1][0]);
+	while (!st.empty())
+	{
+		int t = st.top(); st.pop();
+		cout << t << " ";
+		if(v[t][2])st.push(v[t][2]); if(v[t][1])st.push(v[t][1]);
+	}
+}
+
+void m_travel(const vector<vector<int> >& v,int t)//中序遍历 左根右
+{
+	if (v[t][1])m_travel(v, v[t][1]);
+	cout << t << " ";
+	if (v[t][2])m_travel(v, v[t][2]);
+}
+
+void l_travel(const vector<vector<int> >& v,int t)//后续遍历 左右根
+{
+	if (v[t][1])l_travel(v, v[t][1]);
+	if (v[t][2])l_travel(v, v[t][2]);
+	cout << t << " ";
+}
+
+int main()
+{
+	int n, a, b, c; cin >> n;
+	vector<vector<int> >v(n + 1, vector<int>(3, 0));
+	cout << "n = " << n << endl;
+	for (int i = 1; i < n+1; i++)
+	{
+		cin >> a >> b >> c;
+		v[i][0] = a; v[i][1] = b; v[i][2] = c;
+	}
+	cout << "--------停止输入-----------" << endl;
+	//show(v);
+	p_travel(v);
+	cout << endl << "---------" << endl;
+	m_travel(v,1);
+	cout << endl << "---------" << endl;
+	l_travel(v,1);
+	cout << endl << "---------" << endl;
+
+}
+
+
+
+
+
