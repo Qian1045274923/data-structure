@@ -1,0 +1,42 @@
+假设输入的前序遍历和中序遍历的结果中都不含重复的数字。请通过输入的前序遍历和中序遍历构建出符合条件的二叉树
+
+CODE:
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
+};
+
+
+class Solution {
+public:
+    unordered_map<int, int>m;
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if (!preorder.size())return NULL;
+        for (int i = 0; i < inorder.size(); ++i) {
+            m[inorder[i]] = i;
+        } 
+        return building(preorder, inorder, 0, preorder.size() - 1, 0, inorder.size() - 1);
+    }
+private:
+    TreeNode* building(const vector<int>& preorder, const vector<int>& inorder, int pre_l, int pre_r, int ior_l, int ior_r)
+    {
+        if (pre_l > pre_r)return NULL;
+
+        int pre_root = pre_l;//根节点在前序遍历数组中的下标
+        int ior_root = m[preorder[pre_root]];//根节点在中序遍历数组中的下标
+        int L_size = ior_root - ior_l;//根节点左子树的大小
+
+        TreeNode* root = new TreeNode(preorder[pre_root]);//创建根节点
+
+        root->left = building(preorder, inorder, pre_l+1, pre_l+L_size, ior_l, ior_root - 1);
+        root->right = building(preorder, inorder, pre_l+L_size+1,pre_r, ior_root + 1,ior_r);
+
+        return root;
+    }
+};
+
