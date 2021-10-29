@@ -1,0 +1,56 @@
+假设输入的中序遍历和后序遍历的结果中都不含重复的数字。请通过输入的前序遍历和中序遍历构建出符合条件的二叉树
+
+CODE:
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
+};
+
+unordered_map<int, int>m;
+
+TreeNode* building(const vector<int>& ior, const vector<int>& fin, int ior_l, int ior_r, int fin_l, int fin_r)
+{
+    if (fin_l > fin_r)return NULL;
+
+    int fin_root = fin_r;//根节点在后序遍历数组中的下标
+    int ior_root = m[fin[fin_root]];//根节点在中序遍历数组中的下标
+    int L_size = ior_root - ior_l;//根节点左子树的大小
+
+
+    TreeNode* root = new TreeNode(fin[fin_root]);//创建根节点
+
+    root->left = building(ior, fin, ior_l, ior_root - 1, fin_l, fin_l + L_size - 1);
+    root->right = building(ior, fin, ior_root + 1, ior_r, fin_l + L_size, fin_root - 1);
+
+    return root;
+}
+
+void travel(TreeNode* root)
+{
+    if (root)
+    {
+        cout << root->val << " ";
+        travel(root->left); travel(root->right);
+    }
+}
+
+int main()
+{
+    int n; cin >> n;
+    if (!n)return 0;//非法个数
+
+    vector<int>ior; vector<int>fin;
+    for (int i = 0; i < n; i++)cin >> fin[i];//输入后序遍历数组
+    for (int i = 0; i < n; i++)cin >> ior[i];//输入中序遍历数组
+    for (int i = 0; i < ior.size(); ++i) m[ior[i]] = i;
+    
+    TreeNode* root= building(ior, fin, 0, ior.size() - 1, 0, fin.size() - 1);//构建二叉树
+
+    travel(root);//前序遍历
+    
+}
