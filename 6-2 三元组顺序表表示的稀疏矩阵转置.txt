@@ -1,0 +1,108 @@
+**6-2 三元组顺序表表示的稀疏矩阵转置 (10 分)
+本题要求实现一个函数，实现三元组顺序表表示的稀疏矩阵转置。**
+
+函数接口定义：
+struct tripletable * trans(struct tripletable *t1);
+其中 t1 是用户传入的参数。 函数须返回转置后的三元组顺序表指针。
+
+裁判测试程序样例：
+#include <stdio.h>
+#include <stdlib.h>
+#define M 100
+struct node{
+    int i,j,v;
+};
+
+struct tripletable
+{
+    struct node S[M];
+    int m,n,t;
+};
+
+struct tripletable * create()
+{    int i;
+    struct tripletable *head=(struct tripletable *)malloc(sizeof(struct tripletable));
+    scanf("%d%d%d",&(head->m),&(head->n),&(head->t));
+    for(i=0;i<head->t;i++)
+        scanf("%d%d%d",&(head->S[i].i),&(head->S[i].j),&(head->S[i].v));
+    return head;
+}
+
+void print(struct tripletable * head)
+{
+    int i;
+    for(i=0;i<head->t;i++)
+    printf("%d %d %d\n",(head->S[i].i),(head->S[i].j),(head->S[i].v));
+}
+
+struct tripletable * trans(struct tripletable *t1);
+int main()
+{ 
+    struct tripletable * head,*t2;
+    head=create();
+    t2=trans(head);
+    print(t2);
+    return 0;
+}
+
+/* 请在这里填写答案 */
+**输入样例：**
+输入第1行为矩阵行数m、列数n及非零元素个数t。 按行优先顺序依次输入t行，每行3个数，分别表示非零元素的行标、列标和值。
+
+3 4 3
+0 1 -5
+1 0 1
+2 2 2
+结尾无空行
+**输出样例：**
+输出转置后的三元组顺序表结果，每行输出非零元素的行标、列标和值，行标、列标和值之间用空格分隔，共t行。
+
+0 1 1
+1 0 -5
+2 2 2
+结尾无空行
+
+
+C++（g++）：
+
+```cpp
+struct tripletable* trans(struct tripletable* t1)
+{
+
+    int** a = new int* [t1->t], j = 0;
+    for (int i = 0; i < t1->t; i++)
+    {
+        int* q = new int[3];
+        a[i] = q;
+    }
+    for (int i = 0; i < t1->t; i++)//遍历tripletable中元素
+    {
+        a[i][j++] = t1->S[i].j; 
+        a[i][j++] = t1->S[i].i;
+        a[i][j++] = t1->S[i].v;
+        t1->S[i].v = 0;
+        j = 0;
+
+    }
+    for (int i = 0; i < t1->t; i++)//对数组进行排序
+    {
+        for (int j = 0; j < t1->t - 1 - i; j++)
+        {
+            if (a[j][0] > a[j + 1][0])
+            {
+                int *T1 = a[j];
+                int* T2 = a[j + 1];
+                a[j] = T2; a[j + 1] = T1;
+            }
+        }
+    }
+    for (int i = 0; i < t1->t; i++)
+    {
+        t1->S[i].i = a[i][0];
+        t1->S[i].j = a[i][1];
+        t1->S[i].v = a[i][2];
+    }
+    return t1;
+}
+```
+
