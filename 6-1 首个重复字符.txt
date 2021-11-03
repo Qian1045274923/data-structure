@@ -1,0 +1,51 @@
+**6-1 首个重复字符 (15 分)
+对于一个字符串，请设计一个高效算法，找到第一次重复出现的字符。**
+
+给定一个字符串(不一定全为字母)，请返回第一个重复出现的字符。保证字符串中有重复字符，字符串的长度小于等于500。例如abxyzza中，第1个重复出现的字符是z，则该函数应该返回z。
+
+函数接口定义：
+/* 返回第1个重复出现的字符 */
+char findFirstRepeat(char* pStr);
+其中 pStr 是传入的字符串。函数须返回 pStr 中 第1次重复出现的字符。
+
+裁判测试程序样例：
+#include <stdio.h>
+#include <string.h>
+
+/* 返回第1个重复出现的字符 */
+char findFirstRepeat(char* pStr);
+
+int main(void)
+{
+    char str[501], c;
+    int i = 0;
+    while ((c = getchar()) != '\n')
+        str[i++] = c;
+    str[i] = '\0';
+    c = findFirstRepeat(str);
+    putchar(c);
+    return 0;
+}
+
+/* 请在下面填写答案 */
+**输入样例：**
+qywyer23tdd
+结尾无空行
+**输出样例：**
+y
+结尾无空行
+
+C:
+
+```c
+char findFirstRepeat(char* pStr)
+{
+    for (int i = 1; i<strlen(pStr); i++)
+    {
+        for (int j = 0; j < i; j++)
+        {
+            if (pStr[i] == pStr[j])return pStr[i];
+        }
+    }
+}
+```
